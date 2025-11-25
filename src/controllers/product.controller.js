@@ -25,15 +25,35 @@ function CreateProduct(req, res) {
     const newProduct = req.body;
     const product = productModels.create(newProduct);
     res.status(201).json({
-        success:true,
-        message:"success create product"
-    })
+      success: true,
+      message: "success create product",
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
+  }
+}
+
+function EditProduct(req, res) {
+  try {
+    const updated = productModels.edit(req.body, req.params.id);
+
+    if (!updated) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    return res.status(201).json({
+      message: "success edit product",
+      data: updated,
+    });
+  } catch (error) {
+    console.log(error);
   }
 }
 
 module.exports = {
   listProducts,
-  CreateProduct
+  CreateProduct,
+  EditProduct,
 };
