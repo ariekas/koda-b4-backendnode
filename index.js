@@ -2,6 +2,21 @@ const mainRouter = require("./src/routers");
 const express = require("express");
 const app = express();
 app.use(express.json());
+const expressJSDocSwagger = require("express-jsdoc-swagger");
+
+const options = {
+  info: {
+    version: "1.0.0",
+    title: "API Documentation",
+    description: "Dokumentasi api untuk auth dan crud product"
+  },
+  filesPattern: "./**/*.js",
+  // eslint-disable-next-line no-undef
+  baseDir: __dirname,
+  swaggerUIPath: "/docs"
+};
+
+expressJSDocSwagger(app)(options);
 
 
 app.use(("/"), mainRouter);
@@ -13,28 +28,6 @@ app.get("/", (req, res) => {
   });
 });
 
-
-// const products = [
-//     {
-//         id: 1,
-//         name: "Coffe susu",
-//         price : 25000
-//     }
-// ]
-
-// function getProductById(id){
-//     return products.filter(item => item.id === id)[0]
-// }
-
-// app.get("/product/:id",(req, res)=> {
-//     cosnt (id) = req.params
-
-//     res.json({
-//         Success: true,
-//         Message: "Success getting product id",
-//         data: getProductById(id)
-//     })
-// })
 app.listen(8080, () => {
   console.log("Back end Running on port http://localhost:8080");
 });

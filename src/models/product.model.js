@@ -2,18 +2,18 @@ const arrProducts = [
   {
     id: 1,
     name: "Coffe Latte",
-    price: 25000,
+    price: 25000
   },
   {
     id: 2,
     name: "Nasi Goreng",
-    price: 32000,
+    price: 32000
   },
   {
     id: 3,
     name: "Mineral Watter",
-    price: 5000,
-  },
+    price: 5000
+  }
 ];
 
 function create(newProduct) {
@@ -32,7 +32,7 @@ function edit(newProduct, id) {
 
   const updatedData = {
     ...product,
-    ...newProduct,
+    ...newProduct
   };
 
   arrProducts.splice(index, 1, updatedData);
@@ -41,14 +41,14 @@ function edit(newProduct, id) {
 }
 
 function deleteProduct(id){
-    const product = arrProducts.find((item) => item.id === Number(id));
-    if (!product) return null;
-  
-    const index = arrProducts.indexOf(product);
+  const product = arrProducts.find((item) => item.id === Number(id));
+  if (!product) return null;
 
-    arrProducts.splice(index, 1);
+  const index = arrProducts.indexOf(product);
 
-    return product;
+  arrProducts.splice(index, 1);
+
+  return product;
 }
 
 module.exports = {
