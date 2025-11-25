@@ -10,16 +10,16 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
       sourceType: "module",
-      ecmaVersion: "latest",
+      ecmaVersion: "latest"
     },
 
     rules: {
-      "semi": ["error", "always"],                   
-      "quotes": ["error", "double"],                  
-      "indent": ["error", 2],                         
-      "no-trailing-spaces": "error",                  
-      "eol-last": ["error", "always"],               
-      "comma-dangle": ["error", "never"],             
+      "semi": ["error", "always"],
+      "quotes": ["error", "double"],
+      "indent": ["error", 2],
+      "no-trailing-spaces": "error",
+      "eol-last": ["error", "always"],
+      "comma-dangle": ["error", "never"]
     }
   },
 
