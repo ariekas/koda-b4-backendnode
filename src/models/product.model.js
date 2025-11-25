@@ -2,16 +2,19 @@ const arrProducts = [
   {
     id: 1,
     name: "Coffe Latte",
+    image : "",
     price: 25000
   },
   {
     id: 2,
     name: "Nasi Goreng",
+    image: "",
     price: 32000
   },
   {
     id: 3,
     name: "Mineral Watter",
+    image : "",
     price: 5000
   }
 ];
@@ -23,6 +26,15 @@ function create(newProduct) {
 function detail(id) {
   return arrProducts.find((item) => item.id === id);
 }
+
+function uploadImage(id, imagePath) {
+    const product = arrProducts.find((item) => item.id === Number(id));
+    if (!product) return null;
+  
+    product.image = imagePath;
+    return product;
+}
+  
 
 function edit(newProduct, id) {
   const product = arrProducts.find((item) => item.id === Number(id));
@@ -56,5 +68,6 @@ module.exports = {
   create,
   detail,
   edit,
-  deleteProduct
+  deleteProduct,
+  uploadImage
 };

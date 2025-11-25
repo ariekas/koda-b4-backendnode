@@ -223,10 +223,39 @@ function deleteProduct(req, res){
   }
 }
 
+function uploadImage(req, res) {
+  const { id } = req.params;
+
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: "Tidak ada file yang diupload"
+    });
+  }
+
+  const imagePath = req.file.path;
+
+  const updatedProduct = productModels.uploadImage(id, imagePath);
+
+  if (!updatedProduct) {
+    return res.status(404).json({
+      success: false,
+      message: "Produk tidak ditemukan"
+    });
+  }
+
+  return res.status(201).json({
+    success: true,
+    message: "Upload berhasil",
+    data: updatedProduct
+  });
+}
+
 module.exports = {
   listProducts,
   CreateProduct,
   EditProduct,
   detailProduct,
-  deleteProduct
+  deleteProduct,
+  uploadImage
 };
