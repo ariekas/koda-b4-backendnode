@@ -16,7 +16,11 @@ const arrProducts = [
     }
 ]
 
+function create(newProduct){
+    arrProducts.push(newProduct)
+}
 
 module.exports = {
-    arrProducts
+    arrProducts,
+    create
 }

@@ -20,6 +20,20 @@ function listProducts(req, res) {
   }
 }
 
+function CreateProduct(req, res) {
+  try {
+    const newProduct = req.body;
+    const product = productModels.create(newProduct);
+    res.status(201).json({
+        success:true,
+        message:"success create product"
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   listProducts,
+  CreateProduct
 };
