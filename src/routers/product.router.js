@@ -1,17 +1,17 @@
 import { Router } from "express";
-import { listProducts } from "../controllers/product.controller.js";
-// const upload = require("./../../lib/middelware/uploadImage");
+import { listProducts, CreateProduct, EditProduct, detailProduct, deleted, uploadImageController } from "../controllers/product.controller.js";
+import upload from "../lib/middelware/uploadImage.js";
 const router = Router();
 
 router.get("/", listProducts);
-// router.post("/", productController.CreateProduct);
-// router.patch("/:id", productController.EditProduct);
-// router.get("/:id", productController.detailProduct);
-// router.delete("/:id", productController.deleteProduct);
-// router.post(
-//   "/upload/image/:id",
-//   upload.single("image"),
-//   productController.uploadImage
-// );
+router.post("/", CreateProduct);
+router.patch("/:id", EditProduct);
+router.get("/:id", detailProduct);
+router.delete("/:id", deleted);
+router.post(
+  "/upload/image/:id",
+  upload.single("image"),
+  uploadImageController
+);
 
 export default router;

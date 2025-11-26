@@ -1,4 +1,4 @@
-import productModels from "../models/product.model.js";
+import {getAll, create, edit, detail, deleteProduct, uploadImage} from "../models/product.model.js";
 
 /**
  * GET /products
@@ -33,7 +33,7 @@ export async function listProducts(req, res) {
     const sort = req.query.sort || null;
     const order = req.query.order || "asc";
 
-    const products = await productModels.getAll(search, sort, order);
+    const products = await getAll(search, sort, order);
 
     if (products.length > 0) {
       res.status(200).json({
@@ -78,25 +78,25 @@ export async function listProducts(req, res) {
  *   "message": "error: product not found"
  * }
  */
-// function detailProduct(req, res){
-//   try {
-//     const product = productModels.detail(Number(req.params.id));
-//     if (!product){
-//       res.status(404).json({
-//         success:false,
-//         message:"error: product not found"
-//       });
-//     }else{
-//       res.status(201).json({
-//         success:true,
-//         message:"success get detail product",
-//         data: product
-//       });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+export async function detailProduct(req, res){
+  try {
+    const product = detail(Number(req.params.id));
+    if (!product){
+      res.status(404).json({
+        success:false,
+        message:"error: product not found"
+      });
+    }else{
+      res.status(201).json({
+        success:true,
+        message:"success get detail product",
+        data: product
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 /**
  * GET /products/{id}
@@ -120,19 +120,19 @@ export async function listProducts(req, res) {
  *   "message": "error: product not found"
  * }
  */
-// function CreateProduct(req, res) {
-//   try {
-//     const newProduct = req.body;
-//     const product = productModels.create(newProduct);
-//     res.status(201).json({
-//       success: true,
-//       message: "success create product",
-//       data: product
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+export async function CreateProduct(req, res) {
+  try {
+    const newProduct = req.body;
+    const product = await create(newProduct);
+    res.status(201).json({
+      success: true,
+      message: "success create product",
+      data: product
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 /**
  * PUT /products/{id}
@@ -160,24 +160,24 @@ export async function listProducts(req, res) {
  *   "message": "Product not found"
  * }
  */
-// function EditProduct(req, res) {
-//   try {
-//     const updated = productModels.edit(req.body, Number(req.params.id));
+export async function EditProduct(req, res) {
+  try {
+    const updated = await edit(req.body, Number(req.params.id));
 
-//     if (!updated) {
-//       return res.status(404).json({
-//         message: "Product not found"
-//       });
-//     }
+    if (!updated) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
 
-//     return res.status(201).json({
-//       message: "success edit product",
-//       data: updated
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+    return res.status(201).json({
+      message: "success edit product",
+      data: updated
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 /**
  * DELETE /products/{id}
@@ -198,48 +198,49 @@ export async function listProducts(req, res) {
  *   "message": "Product not found"
  * }
  */
-// function deleteProduct(req, res){
-//   try {
-//     const product = productModels.deleteProduct(Number(req.params.id));
+export async function deleted(req, res){
+  try {
+    const product = await deleteProduct(Number(req.params.id));
 
-//     if (!product){
-//       return res.status(404).json({
-//         message: "Product not found"
-//       });
-//     }else{
-//       return res.status(201).json({
-//         message: "susscess product deleted"
-//       });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+    if (!product){
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }else{
+      return res.status(201).json({
+        message: "susscess product deleted"
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-// function uploadImage(req, res) {
-//   const { id } = req.params;
+export async function uploadImageController(req, res) {
+  try {
+    const { id } = req.params;
+    const imagePath = req.file.path;
 
-//   if (!req.file) {
-//     return res.status(400).json({
-//       success: false,
-//       message: "Tidak ada file yang diupload"
-//     });
-//   }
+    const updated = await uploadImage(id, imagePath);
 
-//   const imagePath = req.file.path;
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Product tidak ditemukan"
+      });
+    }
 
-//   const updatedProduct = productModels.uploadImage(id, imagePath);
+    return res.status(200).json({
+      success: true,
+      message: "Upload image berhasil",
+      data: updated
+    });
 
-//   if (!updatedProduct) {
-//     return res.status(404).json({
-//       success: false,
-//       message: "Produk tidak ditemukan"
-//     });
-//   }
-
-//   return res.status(201).json({
-//     success: true,
-//     message: "Upload berhasil",
-//     data: updatedProduct
-//   });
-// }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Gagal upload image",
+      error: error.message
+    });
+  }
+}

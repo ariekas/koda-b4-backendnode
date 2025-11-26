@@ -1,4 +1,5 @@
 import { validationResult } from "express-validator";
+import {findUserEmail, create} from "../models/user.model.js";
 /**
  * POST /login
  * @summary Login user
@@ -23,31 +24,40 @@ import { validationResult } from "express-validator";
  *   "message": "Login Failed"
  * }
  */
-export function loginController(req, res) {
-  const result = validationResult(req);
-  if (!result.isEmpty()){
-    res.json({
-      success: false,
-      message: "error validate",
-      result : result.array()
-    });
-  };
+export async function registerController(req, res) {
   try {
-    const { email, password } = req.body;
-    console.log(email, password);
-    if (email == "ari@gmail.com" && password == "123") {
-      res.status(201).json({
-        success: true,
-        message: "Login susccess"
-      });
-    } else {
-      res.status(401).json({
-        Success: false,
-        Messange: "Login Failed"
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.json({
+        success: false,
+        message: "error validate",
+        result: result.array()
       });
     }
+
+    const { email, password } = req.body;
+
+    const extUser = await findUserEmail(email);
+    if (extUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email sudah terdaftar"
+      });
+    }
+
+    const newUser = await create(email, password);
+
+    res.status(201).json({
+      success: true,
+      message: "Register berhasil",
+      data: newUser
+    });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Register gagal",
+      error: error.message
+    });
   }
 }
 
@@ -69,17 +79,39 @@ export function loginController(req, res) {
  *   "message": "Register success"
  * }
  */
-export function registerController(req, res) {
+export async function loginController(req, res) {
   try {
     const { email, password } = req.body;
 
-    console.log(email, password);
-    res.status(201).json({
+    const user = await findUserEmail(email);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Email tidak ditemukan"
+      });
+    }
+
+    if (password !== user.password) {
+      return res.status(401).json({
+        success: false,
+        message: "Password salah"
+      });
+    }
+
+    res.status(200).json({
       success: true,
-      message: "Register success"
+      message: "Login berhasil",
+      data: {
+        id: user.id,
+        email: user.email
+      }
     });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Login gagal",
+      error: error.message
+    });
   }
 }
-

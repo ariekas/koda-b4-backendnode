@@ -1,27 +1,6 @@
-import prisma from "../../lib/connectDB.js";
+import prisma from "../lib/connectDB.js";
 
-// const arrProducts = [
-//   {
-//     id: 1,
-//     name: "Coffe Latte",
-//     image: "",
-//     price: 25000
-//   },
-//   {
-//     id: 2,
-//     name: "Nasi Goreng",
-//     image: "",
-//     price: 32000
-//   },
-//   {
-//     id: 3,
-//     name: "Mineral Watter",
-//     image: "",
-//     price: 5000
-//   }
-// ];
-
-async function getAll(search, sort, order) {
+export async function getAll(search, sort, order) {
   const where = {};
 
   if (search) {
@@ -43,54 +22,68 @@ async function getAll(search, sort, order) {
   });
 }
 
-// function create(newProduct) {
-//   arrProducts.push(newProduct);
-// }
+export async function create(name, price) {
+  return await prisma.product.create({
+    data:{
+      name,
+      price
+    }
+  });
+}
 
-// function detail(id) {
-//   return arrProducts.find((item) => item.id === id);
-// }
+export async function detail(id) {
+  return await prisma.product.findUnique({
+    where:{
+      id
+    }
+  });
+}
 
-// function uploadImage(id, imagePath) {
-//   const product = arrProducts.find((item) => item.id === Number(id));
-//   if (!product) return null;
+export async function uploadImage(id, imagePath) {
+  const extProduct = detail(id);
 
-//   product.image = imagePath;
-//   return product;
-// }
+  if (!extProduct) {
+    console.log("Product not found");
+  }
+  const uploadImage = await prisma.product.update({
+    where:{
+      id : Number(id)
+    },
+    data:{
+      image: imagePath
+    }
+  });
 
-// function edit(newProduct, id) {
-//   const product = arrProducts.find((item) => item.id === Number(id));
-//   if (!product) return null;
+  return uploadImage;
+}
 
-//   const index = arrProducts.indexOf(product);
+export async function edit(name, price, id) {
+  const extProduct = detail(id);
 
-//   const updatedData = {
-//     ...product,
-//     ...newProduct
-//   };
+  if (!extProduct) {
+    console.log("Product not found");
+  }
 
-//   arrProducts.splice(index, 1, updatedData);
+  const updatedData = await prisma.product.update({
+    where: {id : Number(id)},
+    data:{
+      name,
+      price
+    }
+  });
+  return updatedData;
+}
 
-//   return updatedData;
-// }
+export async function deleteProduct(id) {
+  const extProduct = detail(id);
 
-// function deleteProduct(id) {
-//   const product = arrProducts.find((item) => item.id === Number(id));
-//   if (!product) return null;
+  if (!extProduct) {
+    console.log("Product not found");
+  }
 
-//   const index = arrProducts.indexOf(product);
+  const product = await prisma.product.delete({
+    where:{id: Number(id)}
+  });
 
-//   arrProducts.splice(index, 1);
-
-//   return product;
-// }
-
-export default {
-  getAll
-  // create,
-  // detail,
-  // edit,
-  // deleteProduct,
-  // uploadImage
-};
+  return product;
+}
