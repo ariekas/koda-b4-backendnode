@@ -1,3 +1,4 @@
+const {validationResult} = require("express-validator");
 /**
  * POST /login
  * @summary Login user
@@ -23,6 +24,14 @@
  * }
  */
 function loginController(req, res) {
+  const result = validationResult(req);
+  if (!result.isEmpty()){
+    res.json({
+      success: false,
+      message: "error validate",
+      result : result.array()
+    });
+  };
   try {
     const { email, password } = req.body;
     console.log(email, password);
